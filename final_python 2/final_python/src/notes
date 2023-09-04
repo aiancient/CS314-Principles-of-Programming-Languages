@@ -1,0 +1,58 @@
+ans = {}
+x = substitute_in_term(ans,t1)
+y = substitute_in_term(ans,t2)
+if occurs_check(x,y) == False:
+	return 
+return ans
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def unify_variable(v,s,subst):
+		assert isinstance(v,Variable)
+		if v.name in subst:
+			return unify(subst[v.name],x)
+		elif isinstance(x,Variable) and x.name in subst:
+			return unify(v,subst[x.name])
+		elif occurs_check(v,x,subst):
+			return None
+		else:
+			return {**subst,v.name:x}
+
+	def unify (self, t1: Term, t2: Term) -> dict:
+		subst = {}
+		if t1==t2:
+			return subst
+		elif isinstance(t1, Variable):
+			return unify_variable(t1,t2,subst)
+		elif isinstance(t2,Variable):
+			return unify_variable(t2,t1,subst)
+		elif isinstance(t1,Function) and isinstance(t2,Function):
+			if t1.relation != t2.relation or len(t1.terms) != len(t2.terms):
+				return None 
+			else:
+				for i in range(len(t1.terms)):
+					subst = unify(t1.terms[i],t2.args[i])
+				return subst
+		else:
+			return None

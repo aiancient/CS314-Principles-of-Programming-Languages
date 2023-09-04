@@ -1,0 +1,12 @@
+( var(Length) ->
+  length(List, 0, Length);
+  Length >= 3,
+    n_largest(L,N,Y),
+    list_sum(Y,X)) ).
+
+
+
+length(L,N);
+  N >= 3
+    n_largest(L,N,Y),
+    list_sum(Y,X)).

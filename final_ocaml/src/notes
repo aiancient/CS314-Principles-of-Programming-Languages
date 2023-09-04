@@ -1,0 +1,32 @@
+let rec subst s x t =
+  match t with
+  | Variable y -> if x = y then s else t
+  | Function (f, u) -> Function (f, List.map (subst s x) u)
+
+let apply s t =
+  List.fold_right (fun (x, u) -> subst u x) s t
+
+let rec occurs x t =
+  match t with
+  | Variable y -> x = y
+  | Function (_, s) -> List.exists (occurs x) s
+
+let rec unify s t =
+  match (s, t) with
+  | (Variable x, Variable y) -> if x = y then Substitution.empty else Substitution.singleton t x
+  | (Function (f, sc), Function (g, tc)) ->
+      if f = g && List.length sc = List.length tc
+      then unifyy (List.combine sc tc)
+      else raise Not_unifiable
+  | ((Variable x, (Function (_, _) as t)) | ((Function (_, _) as t), Variable x)) ->
+      if occurs x t
+      then raise Not_unifiable
+      else Substitution.singleton t x
+
+  and unifyy s =
+    match s with
+    | [] -> Substitution.empty
+    | (x, y) :: t ->
+      let t2 = unifyy t in
+      let t1 = unify (apply t2 x) (apply t2 y) in
+        t1 @ t2

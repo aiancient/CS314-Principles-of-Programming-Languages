@@ -1,0 +1,24 @@
+	def unifyVar (v, x, s):
+		if v.value in s:
+			return unify(s[v.value],x,s)
+		elif isinstance(x,Variable) and x.value in s:
+			return unify(v,s[v.value],s)
+		else:
+			return {**s,v.value:x}
+
+	def unify1 (x: Term, y: Term, self, s : dict) -> dict:
+		if s==null:
+			raise Not_unfifiable
+		elif x==y:
+			return s
+		elif isinstance(x,Variable):
+			return unifyVar(x,y,s)
+		elif isinstance(y,Variable):
+			return unifyVar(y,x,s)
+		#elif (isCompound(x) and isCompound(y)):
+			#return unify2(x.body,y.body,unifyOps(x.head,y.head,s))
+		else:
+			raise Not_unfifiable
+
+	def unify (t1: Term, t2: Term) -> dict:
+		return unify1 (t1,t2,{})
